@@ -1,18 +1,31 @@
-import React from 'react';
+import React, {ChangeEventHandler, FormEvent} from 'react';
 import {Song} from "../../models/Song";
 
 interface SongViewProps {
     songs: Song[],
     addSongToPlaylist: (s:Song) => void
+    sortSongs: (query:string) => void
 }
 
-const SongView: React.FC<SongViewProps> = ({songs, addSongToPlaylist}) => {
+const SongView: React.FC<SongViewProps> = ({songs, addSongToPlaylist, sortSongs}) => {
 
+    const handleSortChange = () => {
+        const sortBy:HTMLSelectElement = document.querySelector("#sortBy") as HTMLSelectElement;
+        sortSongs(sortBy.value);
+    }
 
 
     return (
         <div>
             <h1>All Songs</h1>
+
+            <label>Sort By: </label>
+            <select onChange={handleSortChange} id={"sortBy"}>
+                <option>title</option>
+                <option>interpret</option>
+                <option>duration</option>
+            </select>
+
             <table className={"table table-striped table-hover w-50"} style={{margin:"auto"}}>
                 <thead>
                     <tr>

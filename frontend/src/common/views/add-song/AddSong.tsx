@@ -1,6 +1,7 @@
 import React, {FormEvent} from 'react';
 import {Song} from "../../models/Song";
 import 'bootstrap/dist/css/bootstrap.min.css'
+import {useNavigate} from "react-router-dom";
 
 interface AddSongProps{
     addSong: (song:Song) => void
@@ -20,7 +21,10 @@ const AddSong:React.FC<AddSongProps> = ({addSong}) => {
         }
 
         addSong(jsonObject);
+        navigate("/view-songs");
     }
+
+    const navigate = useNavigate();
 
     return (
         <div>

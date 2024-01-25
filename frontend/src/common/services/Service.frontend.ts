@@ -40,3 +40,8 @@ export async function postSong(song:Song){
         redirect: 'follow'
     });
 }
+
+export async function getSortedSongs(query:string) {
+    const response = await fetch("http://localhost:3000/songs?sortBy="+query);
+    return response.json();
+}

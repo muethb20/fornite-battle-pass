@@ -16,14 +16,33 @@ const express_1 = __importDefault(require("express"));
 const playlist_model_db_1 = require("../src/db/playlist.model.db");
 const router = express_1.default.Router();
 router.get('/', (req, res) => {
+    const sortBy = req.query.sortBy;
     playlist_model_db_1.SongDB.find().then(data => {
         if (!data) {
             throw new Error("Database is empty!");
         }
-        res.status(200).send(data);
+        let response = data;
+        if (sortBy != undefined) {
+            console.log("--> SORT BY:  ", sortBy);
+            response = response.sort((a, b) => {
+                switch (sortBy) {
+                    case "title":
+                        return a.title.localeCompare(b.title);
+                    case "interpret":
+                        return a.interpret.localeCompare(b.interpret);
+                    case "duration":
+                        return a.duration[0] * 60 + a.duration[1] - b.duration[0] * 60 + b.duration[1];
+                    default:
+                        return 0;
+                }
+            });
+        }
+        res.status(200).send(response);
     }).catch(error => {
         console.log("--> GET Route Failed: " + error);
     });
+});
+router.get('/', (req, res) => {
 });
 router.patch('/:id', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const requestedID = req.params.id;

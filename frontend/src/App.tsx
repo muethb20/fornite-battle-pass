@@ -6,7 +6,7 @@ import {Song} from "./common/models/Song";
 import SongView from "./common/views/view-songs/SongView";
 import PlaylistView from "./common/views/view-playlist/PlaylistView";
 import AddSong from "./common/views/add-song/AddSong";
-import {getSongs, postSong, updateSong} from "./common/services/Service.frontend";
+import {getSongs, getSortedSongs, postSong, updateSong} from "./common/services/Service.frontend";
 
 function App() {
 
@@ -30,13 +30,18 @@ function App() {
     setSongsFromDB();
   }
 
+  const sortSongs = async (query:string) => {
+    const sortedSongs = await getSortedSongs(query);
+    setSongs(sortedSongs);
+  }
+
   return (
     <div className="App">
         <BrowserRouter>
           <Routes>
             <Route path={"/"} element={<Header/>}>
               <Route path={"add-song"} element={<AddSong addSong={addSong}/>}></Route>
-              <Route path={"view-songs"} element={<SongView addSongToPlaylist={changeInPlaylist} songs={songs}/>}></Route>
+              <Route path={"view-songs"} element={<SongView sortSongs={sortSongs} addSongToPlaylist={changeInPlaylist} songs={songs}/>}></Route>
               <Route path={"view-playlist"} element={<PlaylistView removeSongFromPlaylist={changeInPlaylist} songs={songs}/>}></Route>
             </Route>
           </Routes>

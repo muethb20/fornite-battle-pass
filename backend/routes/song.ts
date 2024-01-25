@@ -6,14 +6,42 @@ import {Song} from "../src/model/Song";
 const router = express.Router();
 
 router.get('/', (req: Request, res: Response) => {
+    const sortBy = req.query.sortBy;
+
+
     SongDB.find().then(data => {
         if (!data){
             throw new Error("Database is empty!");
         }
-        res.status(200).send(data);
+        let response:Song[] = data;
+
+        if (sortBy != undefined){
+            console.log("--> SORT BY:  ", sortBy);
+
+             response = response.sort((a, b) => {
+                 switch (sortBy){
+                     case "title":
+                        return a.title.localeCompare(b.title);
+                     case  "interpret":
+                         return a.interpret.localeCompare(b.interpret);
+                     case "duration":
+                         return a.duration[0]*60+a.duration[1] - b.duration[0]*60+b.duration[1]
+                     default:
+                         return 0;
+
+                 }
+
+            })
+        }
+
+        res.status(200).send(response);
     }).catch(error => {
         console.log("--> GET Route Failed: " + error)
     })
+})
+
+router.get('/', (req: Request, res: Response) => {
+
 })
 
 router.patch('/:id', async (req:Request, res:Response) => {
